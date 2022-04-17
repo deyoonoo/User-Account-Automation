@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import time
 import json
 import random
 import os
@@ -11,143 +10,81 @@ data.close()
 
 # Import info subject to change
 # Just make variables first, can make dummy information later
-# firstName = jsondata["firstName"]
-firstName = "David"
-lastName = jsondata["firstName"]
-userName = jsondata["userName"] + str(random.randint(1, 99999))
+firstName = jsondata["firstName"]
+lastName = jsondata["lastName"]
+userName = jsondata["userName"] + str(random.randint(10000, 99999))
 emailEnd = jsondata["emailEnd"]
 passw = jsondata["passw"]
 email = jsondata["email"]
-emailFull = email + "+" + str(random.randint(1, 99999)) + "@" + emailEnd
+emailFull = email + "+" + str(random.randint(10000, 99999)) + "@" + emailEnd
+
 browser = webdriver.Chrome(executable_path=os.getcwd() + "/chromedriver")
 browser.implicitly_wait(10)
+tiktokTab = gmailTab = fakePhoneTab = emailTab = browser.current_window_handle
 
 # Functions
-# def getGmail():
-#     import gmailReader as gr
-#     print("getMail")
-#     code = gr.getmail()
-#     codePath = browser.find_element_by_xpath('/html/body/div[1]/div/div[1]/form/div[4]/div[5]/div/input')
-#     if not (codePath.get_property("value") == code):
-#         try:
-#             codePath.clear()
-#         except:
-#             print("Deletion could not be performed")
-#         codePath.send_keys(code)
-#         Register()
-#     else:
-#         if browser.current_url is None:
-#             exit()
-#         else:
-#             getGmail()
+def saveSuccessfulInfo():
+    #tiktok and linked gmail account info
+    #tiktok user and password
+    #gmail user and password
+    return
 
+def getEmailCode(): #Go to gmail and save the confirmation code from the most recent email
+    return
 
-# def Register():
-#     global emailFull, passw
-#     try:
-#         browser.find_element_by_xpath('/html/body/div[1]/div/div[1]/form/div[4]/button').click()
-#         time.sleep(1)
-#         result = browser.find_element_by_xpath('/html/body/div[1]/div/div[1]/form/div[4]/div[6]/div')
-#         print("1")
+def getPhoneCode():
+    browser.get("https://freepublicsms.com/page/Fake-Phone-Number-For-Verification")
+    browser.implicitly_wait(1)
+    fakePhoneTab = browser.current_window_handle
 
-#         if result.get_attribute("innerHTML") == "Incorrect code":
-#             time.sleep(1)
-#             getGmail()
-#         elif result.get_attribute("innerHTML") == "Verification failed. Please click Resend and try again.":
-#             print("Verification failed. Please click Resend and try again.")
-#             time.sleep(1)
-#             Register()
-#             print("2")
-#         elif result.get_attribute("innerHTML") == "Verification failed. Please click Resend and try again.":
-#             print("YOUR IP BLOCKED!")
-#             print("3")
-#         else:
-#             try:
-#                 skipPath = browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/button[2]")
-#                 print("The account has been created, the mails are deleted and the new account is transferred")
-#                 skipPath.click()
+    fake_phone_num = browser.find_element_by_xpath("/html/body/div[2]/div[2]/div/div/div[1]/div/h2").text()
+    return fake_phone_num
 
-#                 import gmailReader as gr
-#                 gr.deletemail()
-#                 browser.quit()
-#             except:
-#                 print("no account opened")
-#             print("5")
-#     except:
-#         try:
-#             print(browser.current_url)
-#         except:
-#             import bot
-#             exit()
-#         try:
-#             skipPath = browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/button[2]")
-#             print("The account has been created, the mails are deleted and the new account is transferred")
-#             skipPath.click()
-#             successReg(emailFull, passw)
-#             import gmailReader as gr
-#             gr.deletemail()
-#             browser.quit()
-#             import os, sys
-#             os.startfile(__file__)
-#             sys.exit()
-#         except:
-#             if (browser.current_url == "https://www.tiktok.com/login/download-app"):
-#                 successReg(emailFull, passw)
-#                 import gmailReader as gr
-#                 gr.deletemail()
-#                 browser.quit()
-#                 import os, sys
-#                 os.startfile(__file__)
-#                 sys.exit()
-#             print("You did not enter the code, try again")
-#             time.sleep(1)
-#             Register()
-#             print("6")
-
-
-# def successReg(email, password):
-#     veri = open("users.txt", "a")
-#     veri.write(email + ":" + password + "\n")
-
-def getGmailCode():
+def createEmailAccount():
+    browser.get("https://accounts.google.com/signup")
+    browser.implicitly_wait(1)
+    gmailTab = browser.current_window_handle
     try:
-        tiktokTab = browser.current_window_handle
-        browser.delete_all_cookies()
-        
-        #Fill in account creation pages
-        browser.execute_script('''window.open("https://accounts.google.com/signup/v2/webcreateaccount?service=mail&continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ltmpl=default&gmb=exp&biz=false&flowName=GlifWebSignIn&flowEntry=SignUp","_blank");''')
-        gmailTab = browser.current_window_handle
+        #get the first name textbox
+        first_name = browser.find_element_by_id("firstName")
+        first_name.send_keys(firstName)
 
-        print('Gmail Page is open successfully.')
-        browser.manage().timeouts().implicitlyWait(5)
-        browser.find_element_by_xpath("//*[@id='firstName']").send_keys(firstName)
-        print ('Enter First Name')
-        browser.find_element_by_id('lastName').send_keys(lastName)
-        print ('Enter Last Name')
-        userNameBox = browser.find_element_by_id('username')
-        userNameBox.send_keys(userName)
-        userNameBox.send_keys(Keys.Tab)
-        
-        #if username is taken
-        if(browser.find_element_by_xpath("/html/body/div[1]/div[1]/div[2]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[2]/div[1]/div/div[2]/div[2]/div/text") == "That username is taken. Try another."):
-            browser.find_element_by_xpath("1]/div[2]/div[1]/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[2]/div[2]/div/ul/li[2]/button").click()
+        surname = browser.find_element_by_id("lastName")
+        surname.send_keys(lastName)
 
+        username = browser.find_element_by_id("username")
+        username.send_keys(userName)
         
-        print ('enter username')
-        browser.find_element_by_name('Passwd').send_keys(passw)
-        print ('Password Enter Successfully')
+        password = browser.find_element_by_id("passwd")
+        password.send_keys(passw)
 
-        browser.switch_to_window(tiktokTab)
-        browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/div[4]/div[5]/button").click() #send code button
-        browser.switch_to_window(gmailTab)
-        return 0
+        confirm_password = browser.find_element_by_id("confirm-passwd")
+        confirm_password.send_keys(passw)
+
+        next_btn = browser.find_element_by_xpath("/html/body/div[1]/div[1]/div[2]/div[1]/div[2]/div/div/div[2]/div/div[2]/div/div[1]/div/div/button")
+        next_btn.click()       
+
+        phone_number = browser.find_element_by_id("phoneNumberId")
+        phone_number.send_keys(getPhoneCode())
+
+        next_btn = browser.find_element_by_xpath('//*[@id="accountDetailsNext"]/div/button')
+        next_btn.click()
+
+        if(browser.find_element_by_xpath('//*[@id="view_container"]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[2]/div[1]/div/div[2]/div[2]/div/text()').text() == "That username is taken. Try another."):
+            userName = browser.find_element_by_xpath('//*[@id="view_container"]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[2]/div[2]/div/ul/li[2]/button').text()
+            browser.find_element_by_xpath('//*[@id="view_container"]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[2]/div[2]/div/ul/li[2]/button').click()
+            next_btn.click()
+
     except:
-        return 1
-
+        raise ValueError("Textbox not found")
+    return 
 
 def main():
     try:
+        #create account
         browser.get("https://www.tiktok.com/signup/phone-or-email/email")
+        tiktokTab = browser.current_window_handle
+
         emailPath = browser.find_element_by_name("email")
         passPath = browser.find_element_by_name("password")
 
@@ -163,12 +100,15 @@ def main():
         browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/div[2]/div[3]/div").click()
         browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/div[2]/div[3]/ul/li[29]").click() #age
         browser.find_element_by_xpath("/html/body/div[1]/div").click()
+        createEmailAccount()
+        #fill in code
+        browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/div[4]/div[5]/button").click() #send code button
+
     except:
         print("Webpage elements have changed.")
 
     #get code from newly created email account at gmail.com
-    code = getGmailCode()
-    print(code)
+       
 
 
 if __name__ == "__main__":
