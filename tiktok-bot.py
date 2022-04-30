@@ -4,33 +4,15 @@ from weakref import proxy
 from numpy import empty
 from selenium import webdriver
 import json
-import random
-import os
 import time
 
 
+# make 1 gmail account
+# automate alias creation on the same email
+# save all aliases into json and temporary list
+# go to tiktok and loop creation through all aliases, each alias creating a new email
 
-data = open("settings.json", "r+", encoding="utf8")
-jsondata = json.load(data)
-data.close()
-
-# Import info subject to change
-# Just make variables first, can make dummy information later
-firstName = jsondata["firstName"]
-lastName = jsondata["lastName"]
-userName = ""
-emailEnd = jsondata["emailEnd"]
-passw = jsondata["passw"]
-email = jsondata["email"]
-
-options = webdriver.ChromeOptions() 
-options.add_argument("start-maximized")
-options.add_experimental_option("excludeSwitches", ["enable-automation"])
-options.add_experimental_option('useAutomationExtension', False)
-browser = webdriver.Chrome(options=options, executable_path=os.getcwd() + "/chromedriver")
-browser.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-browser.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
-print(browser.execute_script("return navigator.userAgent;"))
+# after successful registration, register gmail account and password + tiktok account and password in 1 json node 
 
 # Functions
 def saveSuccessfulInfo():
@@ -39,34 +21,61 @@ def saveSuccessfulInfo():
     #gmail user and password
     return
 
-def getEmailCode(): #Go to gmail and save the confirmation code from the most recent email
+def getEmailCode(fullEmail, password): #Go to gmail and save the confirmation code from the most recent email
     return
 
-def createEmailAlias():
+def createEmailAlias(browser, gmailAddress, passw):
     # use one existing email address
     # create a nickname for the email address
+    # save the email in a list
 
-    fullEmail = ""
     browser.execute_script("window.open('about:blank', '');")
     browser.switch_to.window(browser.window_handles[1])
-    browser.get('https://account.protonmail.com/signup')
-    time.sleep(10)
+    browser.get('https://accounts.google.com/signin/v2/identifier?service=mail&passive=1209600&osid=1&continue=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0%2F&followup=https%3A%2F%2Fmail.google.com%2Fmail%2Fu%2F0%2F&emr=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin')
 
-    browser.find_element_by_id("username").send_keys(userName)
-    print("username input")
+    browser.find_element_by_id("identifierId").send_keys(gmailAddress)
+    browser.find_element_by_xpath('/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[2]/div/div[1]/div/div/button').click()
+    browser.implicitly_wait(20)
+    #browser.find_element_by_id()
+    browser.find_element_by_xpath('//*[@id="password"]/div[1]/div/div[1]/input').send_keys(passw)
+    browser.find_element_by_xpath('//*[@id="passwordNext"]/div/button').click()
 
-    browser.find_element_by_id("password").send_keys(passw)
-    print("password input")
+    browser.find_element_by_xpath('//*[@id="yDmH0d"]/c-wiz/div/div/div/div[2]/div[4]/div[1]').click()
 
-    browser.find_element_by_id("repeat-password").send_keys(passw)
-    browser.find_element_by_class_name('button button-large button-solid-norm w100 mt1-75').click()
-    browser.find_element_by_class_name('button button-large button-ghost-norm w100 mt0-5').click()
-    browser.switch_to_window(browser.window_handles[0])
+    emailAlias = ""
+    stall = input("Stalling")
+    return emailAlias
 
+def tiktokAccountCreate(browser, ):
+    return
 
 def main():
-    #create account
+
+    data = open("settings.json", "r+", encoding="utf8")
+    jsondata = json.load(data)
+    data.close()
+
+    # Import info subject to change
+    # Just make variables first, can make dummy information later
+    firstName = jsondata["firstName"]
+    lastName = jsondata["lastName"]
+    emailEnd = jsondata["emailEnd"]
+    passw = jsondata["passw"]
+    email = jsondata["email"]
+    fullemail = email + "@" + emailEnd
+
+    import undetected_chromedriver as uc
+    option = uc.ChromeOptions() 
+    # option.add_argument("start-maximized")
+    # option.add_experimental_option("excludeSwitches", ["enable-automation"])
+    # option.add_experimental_option('useAutomationExtension', False)
+    browser = uc.Chrome()
+    browser.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    browser.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
+    print(browser.execute_script("return navigator.userAgent;"))
     browser.get("https://www.tiktok.com/signup/phone-or-email/email")
+    browser.implicitly_wait(10)
+    
     tiktokTab = browser.current_window_handle
     emailPath = browser.find_element_by_name("email")
     passPath = browser.find_element_by_name("password")
@@ -82,11 +91,15 @@ def main():
     browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/div[2]/div[3]/div").click()
     browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/div[2]/div[3]/ul/li[29]").click() #age
     browser.find_element_by_xpath("/html/body/div[1]/div").click()
-    emailPath.send_keys()
+
+    
+    #send to tiktok alias
+    emailPath.send_keys(createEmailAlias(browser, fullemail, passw))
 
     #fill in code
     browser.find_element_by_xpath("/html/body/div[1]/div/div[1]/form/div[4]/div[5]/button").click() #send code button
-    #get code from newly created email account at gmail.com       
+    getEmailCode(fullemail, passw)
+    stall = input("Stalling")
 
 
 if __name__ == "__main__":
