@@ -2,7 +2,7 @@
 
 Automating creation of Tiktok and GMail accounts via Selenium
 
-###Requirements:
+### Requirements:
 
 Undetected Chromedriver, Selenium, CSV
 <br/>
