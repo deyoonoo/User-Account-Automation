@@ -19,7 +19,7 @@
 # TODO: Press create new address button and wait 
 
 #     for i in range(10):
-#         browser.find_element(By.ID, "email").send_keys("malynvirth2@gmail.com")
+#         browser.find_element(By.ID, "email").send_keys("")
 #         browser.implicitly_wait(2)
 #         browser.find_element(By.XPATH, "/html/body/div/div[1]/main/div[1]/div/div/form/div/div/div[1]/div/button").click()
 #         time.sleep(10)
