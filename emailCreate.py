@@ -15,7 +15,7 @@
 #     browser = uc.Chrome()
 #     browser.delete_all_cookies()
 #     browser.get("https://lastmx.com/")
-    
+	
 # TODO: Press create new address button and wait 
 
 #     for i in range(10):
